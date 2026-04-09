@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOBI | Portfolio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ctext x='50%25' y='60%25' font-size='60' fill='white' text-anchor='middle' font-family='Arial' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            scroll-behavior: smooth;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* Film Grain Effect */
+        .noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9990;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Editor's Playhead */
+        #playhead {
+            position: fixed;
+            top: 0; left: 0; height: 3px;
+            background: #ff0000;
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #ffffff, #555555);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Magnetic Thumbnails */
+        .magnetic-wrap {
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            perspective: 1000px;
+        }
+
+        .magnetic-content {
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Letter Animation */
+        .letter {
+            display: inline-block;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.4s;
+            transform-style: preserve-3d;
+        }
+        
+        .letter-container:hover .letter {
+            transform: translateY(-15px) rotateY(20deg) scale(1.1);
+            color: #fff;
+            text-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .letter-container .letter:nth-child(1) { transition-delay: 0s; }
+        .letter-container .letter:nth-child(2) { transition-delay: 0.05s; }
+        .letter-container .letter:nth-child(3) { transition-delay: 0.1s; }
+        .letter-container .letter:nth-child(4) { transition-delay: 0.15s; }
+        .letter-container .letter:nth-child(5) { transition-delay: 0.2s; }
+
+        @keyframes letter-entrance {
+            0% { opacity: 0; transform: translateY(100px) rotateX(-90deg) scale(0.5); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+        }
+
+        @keyframes letter-click-anim {
+            0% { transform: translateY(0) rotate(0) scale(1); }
+            20% { transform: translateY(-30px) rotate(15deg) scale(1.4); color: #ff0000; }
+            40% { transform: translateY(-35px) rotate(-15deg) scale(1.5); }
+            100% { transform: translateY(0) rotate(0) scale(1); }
+        }
+
+        .letter-bounce {
+            animation: letter-click-anim 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reveal.active .letter {
+            animation: letter-entrance 1.2s cubic-bezier(0.19, 1, 0.22, 1) both;
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        /* Scanline for videos */
+        .scanline {
+            width: 100%; height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            position: absolute;
+            z-index: 5;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+
+        #custom-cursor {
+            width: 12px; height: 12px;
+            background: white; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 10001;
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        #cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid white; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 10000;
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Timecode styling */
+        .timecode {
+            font-family: monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: #444;
+        }
+
+        @media (max-width: 768px) {
+            #custom-cursor, #cursor-outline { display: none; }
+            body { cursor: auto; }
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-x-hidden">
+    <!-- UI Elements -->
+    <div class="noise"></div>
+    <div id="playhead"></div>
+    <div class="fixed top-2 right-4 z-[10001] timecode hidden md:block" id="timecode-display">00:00:00:00</div>
+    
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-900">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black tracking-tighter italic letter-container group cursor-pointer nav-logo">
+                <span class="letter nav-letter" data-idx="0">K</span>
+                <span class="letter nav-letter" data-idx="1">O</span>
+                <span class="letter nav-letter" data-idx="2">B</span>
+                <span class="letter nav-letter" data-idx="3">I</span>
+                <span class="letter nav-letter text-red-600" data-idx="4">.</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest">
+                <a href="#home" class="hover:text-gray-400 transition nav-link">Home</a>
+                <a href="#thumbnails" class="hover:text-gray-400 transition nav-link">Thumbnails</a>
+                <a href="#videos" class="hover:text-gray-400 transition nav-link">Videos</a>
+                <a href="#contact" class="hover:text-gray-400 transition nav-link">Contact</a>
+            </div>
+            <button class="md:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex flex-col items-center justify-center pt-20 px-6">
+        <div class="max-w-4xl text-center">
+            <span class="block text-sm uppercase tracking-[0.5em] text-gray-500 mb-4 reveal">Creative Portfolio</span>
+            <h1 class="text-6xl md:text-9xl font-black tracking-tighter mb-6 gradient-text uppercase reveal letter-container relative flex justify-center perspective-1000 hero-logo" style="transition-delay: 200ms;">
+                <span class="letter hero-letter cursor-pointer hover:text-white" data-idx="0">K</span>
+                <span class="letter hero-letter cursor-pointer hover:text-white" data-idx="1">O</span>
+                <span class="letter hero-letter cursor-pointer hover:text-white" data-idx="2">B</span>
+                <span class="letter hero-letter cursor-pointer hover:text-white" data-idx="3">I</span>
+                <span class="letter hero-letter cursor-pointer text-red-600 hover:text-red-400" data-idx="4">.</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light reveal" style="transition-delay: 400ms;">
+                Crafting high-impact thumbnails and cinematic video edits. Currently honing the craft of motion and rhythm.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 reveal" style="transition-delay: 600ms;">
+                <a href="#thumbnails" class="bg-white text-black px-8 py-3 font-bold uppercase tracking-tighter hover:bg-gray-200 transition-all hover:px-10">View Thumbnails</a>
+                <a href="#videos" class="border border-gray-700 px-8 py-3 font-bold uppercase tracking-tighter hover:border-white transition-all hover:px-10">Video Projects</a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce reveal" style="transition-delay: 800ms;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Thumbnails Section -->
+    <section id="thumbnails" class="py-24 px-6 bg-neutral-950">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4 reveal">
+                <div>
+                    <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">Thumbnails</h2>
+                    <p class="text-gray-500">High click-through rate designs.</p>
+                </div>
+                <div class="h-[1px] flex-grow mx-8 bg-gray-800 hidden md:block"></div>
+                <span class="text-gray-600 font-mono">04 PROJECTS</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Thumbnail 1 -->
+                <div class="magnetic-wrap reveal" style="transition-delay: 100ms;">
+                    <div class="group relative overflow-hidden border border-gray-800 aspect-video bg-gray-900 magnetic-content">
+                        <div class="absolute top-2 left-2 z-20 text-[10px] text-gray-400 font-mono tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">REC [00:12:05:14]</div>
+                        <img src="C:\Users\jouha\Desktop\Protofolio\thumb-01.png" alt="Thumbnail 1" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-110">
+                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
+                            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Gaming / Concept</p>
+                            <h3 class="text-xl font-bold">Thumbnail Toturial</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail 2 -->
+                <div class="magnetic-wrap reveal" style="transition-delay: 200ms;">
+                    <div class="group relative overflow-hidden border border-gray-800 aspect-video bg-gray-900 magnetic-content">
+                        <div class="absolute top-2 left-2 z-20 text-[10px] text-gray-400 font-mono tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">REC [00:15:22:01]</div>
+                        <img src="C:\Users\jouha\Desktop\Protofolio\thumb-02.png" alt="Thumbnail 2" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-110">
+                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
+                            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Vlog / Lifestyle</p>
+                            <h3 class="text-xl font-bold">The Social Media !</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail 3 -->
+                <div class="magnetic-wrap reveal" style="transition-delay: 300ms;">
+                    <div class="group relative overflow-hidden border border-gray-800 aspect-video bg-gray-900 magnetic-content">
+                        <div class="absolute top-2 left-2 z-20 text-[10px] text-gray-400 font-mono tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">REC [00:22:45:09]</div>
+                        <img src="C:\Users\jouha\Desktop\Protofolio\thumb-03.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-110">
+                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
+                            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Tech / Review</p>
+                            <h3 class="text-xl font-bold">Discord Is Evil !</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail 4 -->
+                <div class="magnetic-wrap reveal" style="transition-delay: 400ms;">
+                    <div class="group relative overflow-hidden border border-gray-800 aspect-video bg-gray-900 magnetic-content">
+                        <div class="absolute top-2 left-2 z-20 text-[10px] text-gray-400 font-mono tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">REC [01:05:32:18]</div>
+                        <img src="C:\Users\jouha\Desktop\Protofolio\thumb-04.png" alt="Thumbnail 4" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-110">
+                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
+                            <p class="text-xs uppercase tracking-widest text-gray-400 mb-1">Tutorial / Educational</p>
+                            <h3 class="text-xl font-bold">Earn In Shopify</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Edits Section -->
+    <section id="videos" class="py-24 px-6 bg-black">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4 reveal">
+                <div>
+                    <h2 class="text-4xl font-black uppercase tracking-tighter mb-2">Video Edits</h2>
+                    <p class="text-gray-500">Learning, cutting, and refining.</p>
+                </div>
+                <div class="h-[1px] flex-grow mx-8 bg-gray-800 hidden md:block"></div>
+                <span class="text-gray-600 font-mono">SOON</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Video Placeholder 1 -->
+                <div class="relative aspect-[9/16] bg-neutral-900 border border-dashed border-gray-700 flex items-center justify-center overflow-hidden group reveal" style="transition-delay: 100ms;">
+                    <div class="text-center z-10">
+                        <span class="block text-4xl mb-4 opacity-50">🎬</span>
+                        <p class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Coming Soon</p>
+                    </div>
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                </div>
+
+                <!-- Video Placeholder 2 -->
+                <div class="relative aspect-[9/16] bg-neutral-900 border border-dashed border-gray-700 flex items-center justify-center overflow-hidden group reveal" style="transition-delay: 200ms;">
+                    <div class="text-center z-10">
+                        <span class="block text-4xl mb-4 opacity-50">🎥</span>
+                        <p class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Coming Soon</p>
+                    </div>
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                </div>
+
+                <!-- Video Placeholder 3 -->
+                <div class="relative aspect-[9/16] bg-neutral-900 border border-dashed border-gray-700 flex items-center justify-center overflow-hidden group reveal" style="transition-delay: 300ms;">
+                    <div class="text-center z-10">
+                        <span class="block text-4xl mb-4 opacity-50">⚡</span>
+                        <p class="text-xs uppercase tracking-[0.2em] font-bold text-gray-500">Coming Soon</p>
+                    </div>
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 px-6 border-t border-gray-900">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-4xl font-black uppercase tracking-tighter mb-8">Work With Me</h2>
+            <p class="text-gray-400 mb-12">Looking for a thumbnail designer or video editor for your next project? Let's connect.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+                <a href="mailto:kobibessn@email.com" class="flex items-center justify-center gap-3 p-6 bg-neutral-900 border border-gray-800 hover:border-white transition-all hover:bg-neutral-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Email Me</span>
+                </a>
+                <a href="https://x.com/Kobi20x" class="flex items-center justify-center gap-3 p-6 bg-neutral-900 border border-gray-800 hover:border-white transition-all hover:bg-neutral-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                    </svg>
+                    <span>Twitter / X</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-900 text-center">
+        <p class="text-gray-600 text-sm uppercase tracking-widest">&copy; 2026 KOBI. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        const outline = document.getElementById('cursor-outline');
+        const playhead = document.getElementById('playhead');
+        const timecodeDisplay = document.getElementById('timecode-display');
+
+        // Mouse Move Interaction
+        window.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            
+            // Cursor update
+            cursor.style.left = clientX + 'px';
+            cursor.style.top = clientY + 'px';
+            
+            outline.style.left = clientX + 'px';
+            outline.style.top = clientY + 'px';
+
+            // Magnetic elements
+            document.querySelectorAll('.magnetic-wrap').forEach(wrap => {
+                const rect = wrap.getBoundingClientRect();
+                const content = wrap.querySelector('.magnetic-content');
+                
+                const isHovering = clientX > rect.left && clientX < rect.right && clientY > rect.top && clientY < rect.bottom;
+                
+                if (isHovering) {
+                    const x = (clientX - rect.left - rect.width / 2) * 0.2;
+                    const y = (clientY - rect.top - rect.height / 2) * 0.2;
+                    content.style.transform = `translate(${x}px, ${y}px) rotateX(${-y/2}deg) rotateY(${x/2}deg)`;
+                } else {
+                    content.style.transform = 'translate(0, 0) rotateX(0) rotateY(0)';
+                }
+            });
+        });
+
+        // Scroll Progress & Timecode Simulation
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            playhead.style.width = scrolled + '%';
+
+            // Fake Timecode Logic
+            const totalSeconds = Math.floor((winScroll / height) * 3600); // 1 hour max
+            const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            const f = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+            timecodeDisplay.innerText = `${h}:${m}:${s}:${f}`;
+        });
+
+        // Hover Effects
+        const hoverables = document.querySelectorAll('a, button, .group, .magnetic-wrap');
+        hoverables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '60px';
+                cursor.style.height = '60px';
+                cursor.style.opacity = '0.1';
+                outline.style.width = '80px';
+                outline.style.height = '80px';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '12px';
+                cursor.style.height = '12px';
+                cursor.style.opacity = '1';
+                outline.style.width = '40px';
+                outline.style.height = '40px';
+            });
+        });
+
+        // Intersection Observer
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Logo Letter Interaction
+        document.querySelectorAll('.hero-letter').forEach(letter => {
+            letter.addEventListener('click', function() {
+                const idx = this.getAttribute('data-idx');
+                const navLetter = document.querySelector(`.nav-letter[data-idx="${idx}"]`);
+                
+                // Trigger animation for hero letter
+                this.classList.remove('letter-bounce');
+                void this.offsetWidth; // Trigger reflow to restart animation
+                this.classList.add('letter-bounce');
+                
+                // Trigger animation for nav letter
+                if (navLetter) {
+                    navLetter.classList.remove('letter-bounce');
+                    void navLetter.offsetWidth;
+                    navLetter.classList.add('letter-bounce');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
