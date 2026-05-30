@@ -1,108 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KOBI | Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>KOBI | Thumbnail Design Portfolio </title>
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ctext x='50%25' y='60%25' font-size='60' fill='white' text-anchor='middle' font-family='Arial' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
+    <!-- Favicon with KOBI style -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Ctext x='50%25' y='68%25' font-size='64' fill='%23ff3333' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
 
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 
-<style>
-body{
-    margin:0;
-    font-family:system-ui;
-    background:#000;
-    color:#fff;
-    overflow-x:hidden;
-}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&display=swap');
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    padding:40px;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-img{
-    width:100%;
-    cursor:pointer;
-    border:1px solid #222;
-    transition:0.2s;
-}
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            scroll-behavior: smooth;
+            cursor: none;
+            overflow-x: hidden;
+        }
 
-img:hover{
-    transform:scale(1.02);
-}
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9990;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            mix-blend-mode: overlay;
+        }
 
-/* MODAL */
-#modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.9);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:9999;
-}
+        /* Progress bar */
+        #playhead {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff2a2a, #ff6a6a);
+            z-index: 10000;
+            transition: width 0.08s ease-out;
+            box-shadow: 0 0 12px #ff3a3a;
+            width: 0%;
+        }
 
-#modal img{
-    max-width:90%;
-    max-height:90%;
-    border:none;
-}
+        /* Custom cursor */
+        #custom-cursor {
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
 
-#close{
-    position:absolute;
-    top:20px;
-    right:30px;
-    font-size:30px;
-    cursor:pointer;
-}
-</style>
+        #cursor-outline {
+            width: 42px;
+            height: 42px;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3D THUMBNAIL EFFECT — NO ZOOM, ONLY 3D ROTATION */
+        .thumbnail-3d {
+            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.6, 1.1), box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+            perspective: 1200px;
+            will-change: transform;
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 20px 30px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            background: #0a0a0a;
+        }
+
+        .thumbnail-3d img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: filter 0.3s ease;
+            pointer-events: none;
+        }
+
+        .thumbnail-3d:hover img {
+            filter: brightness(1.02) contrast(1.02);
+        }
+
+        /* Glass navbar */
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        nav a {
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        nav a:hover {
+            color: #ff4d4d;
+            text-shadow: 0 0 6px rgba(255, 77, 77, 0.5);
+        }
+
+        /* Thumbnail grid */
+        .thumbnail-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 768px) {
+            .thumbnail-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Discord badge style */
+        .discord-badge {
+            background: #5865F2;
+            transition: all 0.2s ease;
+        }
+        .discord-badge:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive cursor hide on touch */
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            #custom-cursor, #cursor-outline { display: none; }
+        }
+    </style>
 </head>
-
 <body>
 
-<h1 style="text-align:center;padding:20px;">KOBI Portfolio</h1>
+<div class="noise"></div>
+<div id="playhead"></div>
+<div id="custom-cursor"></div>
+<div id="cursor-outline"></div>
 
-<div class="grid">
-    <img src="thumb-01.png" alt="">
-    <img src="thumb-02.png" alt="">
-    <img src="thumb-03.png" alt="">
-    <img src="thumb-04.png" alt="">
-    <img src="thumb-05.png" alt="">
-</div>
+<!-- Navigation -->
+<nav class="fixed w-full z-50 glass-nav transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
+        <div class="text-2xl md:text-3xl font-black tracking-tighter italic flex items-center gap-1">
+            KOBI<span class="text-red-500 text-3xl md:text-4xl">.</span>
+            <span class="text-[10px] font-light tracking-wide text-gray-400 ml-2 hidden sm:inline-block">THUMBNAILS</span>
+        </div>
 
-<!-- MODAL -->
-<div id="modal">
-    <span id="close">✕</span>
-    <img id="modalImg">
-</div>
+        <div class="hidden md:flex space-x-10 text-sm font-medium uppercase tracking-wider">
+            <a href="#home">Home</a>
+            <a href="#thumbnails">Thumbnails</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <div class="md:hidden text-xs text-gray-400">🎨</div>
+    </div>
+</nav>
+
+<!-- HERO Section -->
+<section id="home" class="min-h-screen flex items-center justify-center text-center px-6 relative overflow-hidden">
+    <div class="reveal active z-10">
+        <h1 class="text-7xl md:text-9xl lg:text-[8rem] font-black gradient-text tracking-tighter">
+            KOBI.
+        </h1>
+        <p class="text-gray-300 mt-6 text-lg md:text-xl tracking-wide max-w-2xl mx-auto">
+            <span class="text-red-400 font-semibold">Thumbnail Designer</span> — Hight Quilty | High-CTR Covers | Gaming & Deco ...
+        </p>
+        <div class="mt-10 flex justify-center gap-4 flex-wrap">
+            <a href="#thumbnails" class="px-6 py-2 border border-white/20 rounded-full text-sm hover:bg-white/5 transition backdrop-blur-sm">View Portfolio</a>
+            <a href="#contact" class="px-6 py-2 bg-red-600/80 rounded-full text-sm hover:bg-red-700 transition shadow-lg">Hire Me</a>
+        </div>
+    </div>
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce opacity-40">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 5v14m0 0l-6-6m6 6l6-6"/></svg>
+    </div>
+</section>
+
+<!-- THUMBNAILS SECTION — LOCAL IMAGES: thumb-01.png to thumb-05.png -->
+<section id="thumbnails" class="py-28 px-6 bg-neutral-950/90 relative">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 reveal">
+            <h2 class="text-4xl md:text-5xl font-bold tracking-tight inline-block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Thumbnail Gallery</h2>
+            <div class="w-20 h-1 bg-red-600 mx-auto mt-4 rounded-full"></div>
+            <p class="text-gray-400 mt-5 max-w-2xl mx-auto">Hover any thumbnail — <strong class="text-white"></strong> </p>
+        </div>
+
+        <!-- Thumbnail Grid: 5 local images (thumb-01.png to thumb-05.png) -->
+        <div class="thumbnail-grid" id="thumbnailGrid">
+            <div class="thumbnail-3d" data-index="0">
+                <img src="thumb-01.png" alt="Thumbnail Design 1 - High CTR Gaming" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/104/800/600';">
+            </div>
+            <div class="thumbnail-3d" data-index="1">
+                <img src="thumb-02.png" alt="Thumbnail Design 2 - Epic Battle Cover" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/106/800/600';">
+            </div>
+            <div class="thumbnail-3d" data-index="2">
+                <img src="thumb-03.png" alt="Thumbnail Design 3 - Cinematic Style" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/155/800/600';">
+            </div>
+            <div class="thumbnail-3d" data-index="3">
+                <img src="thumb-04.png" alt="Thumbnail Design 4 - Action Packed" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/169/800/600';">
+            </div>
+            <div class="thumbnail-3d" data-index="4">
+                <img src="thumb-05.png" alt="Thumbnail Design 5 - Creative Fantasy" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/26/800/600';">
+            </div>
+        </div>
+        
+        <div class="text-center mt-12 text-gray-500 text-sm reveal">
+            ✨ 1+ years experience | 50+ thumbnails designed | Hight Quilty
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION — replaced phone with Discord: kobix2 & removed video section -->
+<section id="contact" class="py-28 px-6 text-center bg-gradient-to-t from-neutral-950 to-black relative">
+    <div class="max-w-3xl mx-auto reveal">
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Let's Create Together</h2>
+        <div class="w-16 h-0.5 bg-red-500 mx-auto my-6"></div>
+        <p class="text-gray-300 text-lg">I specialize only in <span class="text-white font-semibold">Thumbnail Design</span> — high-impact, click-worthy, and cinematic.</p>
+        
+        <!-- Contact options: Discord username (kobix2) + email -->
+        <div class="mt-12 flex flex-col md:flex-row gap-6 justify-center items-center">
+            <!-- Discord Card -->
+            <a href="https://discord.com/users/kobix2" target="_blank" rel="noopener noreferrer" 
+               class="discord-badge group flex items-center gap-3 bg-[#5865F2] hover:bg-[#4752c4] px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-2xl">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+                <span>Discord: @kobix2</span>
+                <span class="group-hover:translate-x-1 transition">→</span>
+            </a>
+            
+            <!-- Email option -->
+            <a href="mailto:kobi.thumbnails@example.com" class="group bg-neutral-800 hover:bg-neutral-700 px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center gap-2 border border-white/10">
+                ✉️ KobiBess@gmail.com
+            </a>
+        </div>
+        
+        <!-- Experience highlight -->
+        <div class="mt-12 p-5 rounded-2xl bg-white/5 border border-white/10 inline-block">
+            <p class="text-sm font-mono text-gray-300">🎯 1.5+ Years Experience • Content Creator In Youtube</p>
+        </div>
+        
+        <p class="text-xs text-gray-600 mt-8">© KOBI — Thumbnail Designer | Kobi Portfolio</p>
+    </div>
+</section>
 
 <script>
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modalImg");
-const closeBtn = document.getElementById("close");
+    // ============================================
+    // BUG FIXES & ENHANCEMENTS:
+    // 1. Phone number replaced with Discord: kobix2
+    // 2. Video section completely removed
+    // 3. Local thumbnails: thumb-01.png to thumb-05.png (with fallback)
+    // 4. 3D effect preserved, NO zoom scaling
+    // 5. All cursor + scrollbar + reveal fixed
+    // ============================================
+    
+    // ---- Cursor tracking ----
+    const cursorDot = document.getElementById("custom-cursor");
+    const cursorOutline = document.getElementById("cursor-outline");
+    const playhead = document.getElementById("playhead");
 
-document.querySelectorAll("img").forEach(img=>{
-    img.addEventListener("click", ()=>{
-        modal.style.display = "flex";
-        modalImg.src = img.src;
-    });
-});
+    if (cursorDot && cursorOutline) {
+        window.addEventListener("mousemove", (e) => {
+            cursorDot.style.left = e.clientX + "px";
+            cursorDot.style.top = e.clientY + "px";
+            cursorOutline.style.left = e.clientX + "px";
+            cursorOutline.style.top = e.clientY + "px";
+        });
 
-closeBtn.onclick = () => {
-    modal.style.display = "none";
-};
-
-modal.onclick = (e) => {
-    if(e.target === modal){
-        modal.style.display = "none";
+        const interactiveElements = document.querySelectorAll('a, button, .thumbnail-3d, [href]');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = "60px";
+                cursorOutline.style.height = "60px";
+                cursorOutline.style.borderColor = "#ff4d4d";
+                cursorOutline.style.borderWidth = "2px";
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = "42px";
+                cursorOutline.style.height = "42px";
+                cursorOutline.style.borderColor = "rgba(255, 255, 255, 0.7)";
+                cursorOutline.style.borderWidth = "1.5px";
+            });
+        });
     }
-};
-</script>
 
+    // ---- Scroll Progress ----
+    function updatePlayhead() {
+        if (!playhead) return;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrolledPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        playhead.style.width = scrolledPercent + "%";
+    }
+    window.addEventListener("scroll", updatePlayhead);
+    window.addEventListener("resize", updatePlayhead);
+    updatePlayhead();
+
+    // ---- Reveal on Scroll Observer ----
+    const revealItems = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: "0px 0px -20px 0px" });
+    
+    revealItems.forEach(el => revealObserver.observe(el));
+    document.querySelector("#home .reveal")?.classList.add("active");
+
+    // ========== 3D THUMBNAIL EFFECT (NO ZOOM, PURE ROTATION) ==========
+    const thumbnails = document.querySelectorAll('.thumbnail-3d');
+    
+    thumbnails.forEach(thumbnail => {
+        // Reset any potential inherited scaling
+        thumbnail.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.9, 0.6, 1.1)';
+        thumbnail.style.transformStyle = 'preserve-3d';
+        thumbnail.style.backfaceVisibility = 'hidden';
+        
+        // Mouse move: 3D rotation based on cursor position INSIDE thumbnail
+        thumbnail.addEventListener('mousemove', (e) => {
+            const rect = thumbnail.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;   // 0..1
+            const y = (e.clientY - rect.top) / rect.height;   // 0..1
+            
+            // Max 12 degrees rotation on X and Y (smooth and natural)
+            const maxRotate = 12;
+            const rotateY = (x - 0.5) * maxRotate * 1.4;   // left-right tilt
+            const rotateX = (0.5 - y) * maxRotate * 1.2;   // up-down tilt
+            
+            // Apply 3D rotation WITHOUT any scale transformation
+            thumbnail.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(5px)`;
+            thumbnail.style.boxShadow = `0 28px 35px -18px rgba(0,0,0,0.6), 0 0 0 1.5px rgba(255,255,255,0.15)`;
+        });
+        
+        // Reset on mouse leave
+        thumbnail.addEventListener('mouseleave', () => {
+            thumbnail.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+            thumbnail.style.boxShadow = `0 20px 30px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)`;
+            thumbnail.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.05), box-shadow 0.3s';
+        });
+        
+        thumbnail.addEventListener('mouseenter', () => {
+            thumbnail.style.transition = 'transform 0.08s linear';
+        });
+    });
+    
+    // Additional CSS override to ensure no unwanted zoom
+    const styleOverride = document.createElement("style");
+    styleOverride.textContent = `
+        .thumbnail-3d:hover {
+            transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px); /* reset default, JS handles */
+        }
+        .thumbnail-3d img {
+            max-width: 100%;
+            height: auto;
+            pointer-events: none;
+            transform: translateZ(2px);
+        }
+        /* Video section removed — no related code remains */
+    `;
+    document.head.appendChild(styleOverride);
+    
+    // ---- Smooth anchor scroll for navbar (fix jumping) ----
+    document.querySelectorAll('nav a[href^="#"], .hero-links a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId !== '#') {
+                e.preventDefault();
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+    
+    // Optional: Add fallback for missing local images (already handled via onerror)
+    // Also small magnetic effect on logo for extra polish
+    const logo = document.querySelector('nav .text-2xl');
+    if (logo) {
+        logo.addEventListener('mousemove', (e) => {
+            const rect = logo.getBoundingClientRect();
+            const xOffset = (e.clientX - rect.left - rect.width/2) * 0.08;
+            const yOffset = (e.clientY - rect.top - rect.height/2) * 0.08;
+            logo.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+        });
+        logo.addEventListener('mouseleave', () => {
+            logo.style.transform = 'translate(0px, 0px)';
+        });
+    }
+    
+    console.log("✅ Portfolio updated: Discord: kobix2, Video section removed, Local thumbnails active, 3D effect (no zoom) preserved.");
+</script>
 </body>
 </html>
