@@ -1,181 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KOBI | Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOBI | Portfolio</title>
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ctext x='50%25' y='60%25' font-size='60' fill='white' text-anchor='middle' font-family='Arial' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ctext x='50%25' y='60%25' font-size='60' fill='white' text-anchor='middle' font-family='Arial' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;900&display=swap');
+<style>
+body{
+    margin:0;
+    font-family:system-ui;
+    background:#000;
+    color:#fff;
+    overflow-x:hidden;
+}
 
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: #000;
-            color: #fff;
-            scroll-behavior: smooth;
-            cursor: none;
-            overflow-x: hidden;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    padding:40px;
+}
 
-        .noise {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 9990;
-            opacity: 0.05;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
+img{
+    width:100%;
+    cursor:pointer;
+    border:1px solid #222;
+    transition:0.2s;
+}
 
-        #playhead {
-            position: fixed;
-            top: 0; left: 0;
-            height: 3px;
-            background: #ff0000;
-            z-index: 10000;
-            transition: width 0.1s ease-out;
-            box-shadow: 0 0 10px #ff0000;
-        }
+img:hover{
+    transform:scale(1.02);
+}
 
-        .gradient-text {
-            background: linear-gradient(to right, #fff, #555);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* MODAL */
+#modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+}
 
-        .magnetic-content {
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+#modal img{
+    max-width:90%;
+    max-height:90%;
+    border:none;
+}
 
-        .letter {
-            display: inline-block;
-            transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-        }
-
-        #custom-cursor {
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10001;
-            mix-blend-mode: difference;
-        }
-
-        #cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 1px solid white;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: 0.8s ease;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+#close{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:30px;
+    cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
-<div class="noise"></div>
-<div id="playhead"></div>
+<h1 style="text-align:center;padding:20px;">KOBI Portfolio</h1>
 
-<div id="custom-cursor"></div>
-<div id="cursor-outline"></div>
+<div class="grid">
+    <img src="thumb-01.png" alt="">
+    <img src="thumb-02.png" alt="">
+    <img src="thumb-03.png" alt="">
+    <img src="thumb-04.png" alt="">
+    <img src="thumb-05.png" alt="">
+</div>
 
-<!-- NAV -->
-<nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-900">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-        <div class="text-2xl font-black tracking-tighter italic">
-            KOBI<span class="text-red-600">.</span>
-        </div>
-
-        <div class="hidden md:flex space-x-8 text-sm uppercase">
-            <a href="#home">Home</a>
-            <a href="#thumbnails">Thumbnails</a>
-            <a href="#videos">Videos</a>
-            <a href="#contact">Contact</a>
-        </div>
-    </div>
-</nav>
-
-<!-- HERO -->
-<section id="home" class="min-h-screen flex items-center justify-center text-center px-6">
-    <div>
-        <h1 class="text-6xl md:text-9xl font-black gradient-text">KOBI.</h1>
-        <p class="text-gray-400 mt-6">Thumbnail Designer & Video Editor</p>
-    </div>
-</section>
-
-<!-- THUMBNAILS -->
-<section id="thumbnails" class="py-24 px-6 bg-neutral-950">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
-
-        <img src="thumb-01.png" alt="Thumbnail 1" class="w-full">
-
-        <img src="thumb-02.png" alt="Thumbnail 2" class="w-full">
-
-        <img src="thumb-03.png" alt="Thumbnail 3" class="w-full">
-
-        <img src="thumb-04.png" alt="Thumbnail 4" class="w-full">
-
-        <img src="thumb-05.png" alt="Thumbnail 5" class="w-full">
-    </div>
-</section>
-
-<!-- VIDEOS -->
-<section id="videos" class="py-24 px-6">
-    <div class="text-center text-gray-500">Coming Soon</div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="py-24 px-6 text-center">
-    <h2 class="text-3xl font-bold">Work With Me</h2>
-    <p class="text-gray-400 mt-4">Email: example@email.com</p>
-</section>
+<!-- MODAL -->
+<div id="modal">
+    <span id="close">✕</span>
+    <img id="modalImg">
+</div>
 
 <script>
-const cursor = document.getElementById("custom-cursor");
-const outline = document.getElementById("cursor-outline");
-const playhead = document.getElementById("playhead");
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const closeBtn = document.getElementById("close");
 
-window.addEventListener("mousemove", (e) => {
-    cursor.style.left = e.clientX + "px";
-    cursor.style.top = e.clientY + "px";
-
-    outline.style.left = e.clientX + "px";
-    outline.style.top = e.clientY + "px";
-});
-
-window.addEventListener("scroll", () => {
-    const h = document.documentElement.scrollHeight - innerHeight;
-    const p = (scrollY / h) * 100;
-    playhead.style.width = p + "%";
-});
-
-const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add("active");
+document.querySelectorAll("img").forEach(img=>{
+    img.addEventListener("click", ()=>{
+        modal.style.display = "flex";
+        modalImg.src = img.src;
     });
 });
 
-document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+closeBtn.onclick = () => {
+    modal.style.display = "none";
+};
+
+modal.onclick = (e) => {
+    if(e.target === modal){
+        modal.style.display = "none";
+    }
+};
 </script>
 
 </body>
