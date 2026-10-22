@@ -1,453 +1,881 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>KOBI | Thumbnail Design Portfolio </title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kobi — Thumbnail Designer &amp; Game Developer</title>
+<meta name="description" content="Kobi is a Moroccan designer and developer. YouTube thumbnails and games built in Godot — two crafts, one standard.">
+<link rel="canonical" href="https://its-kobi.github.io/">
+<meta name="theme-color" content="#EFEAE0">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kobi">
+<meta property="og:title" content="Kobi — Thumbnail Designer &amp; Game Developer">
+<meta property="og:description" content="YouTube thumbnails and games built in Godot — two crafts, one standard.">
+<meta property="og:url" content="https://its-kobi.github.io/">
+<meta property="og:image" content="https://its-kobi.github.io/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kobi — Thumbnail Designer &amp; Game Developer">
+<meta name="twitter:description" content="Two crafts, one standard.">
+<meta name="twitter:image" content="https://its-kobi.github.io/assets/og-cover.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Cairo:wght@400;600;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var t = params.get('theme') || localStorage.getItem('kobi-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      var l = params.get('lang') || localStorage.getItem('kobi-lang');
+      if (l === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  :root {
+    --paper: #EFEAE0;
+    --paper-deep: #E6DFD2;
+    --ink: #16140F;
+    --soft: rgba(22, 20, 15, .62);
+    --line: rgba(22, 20, 15, .18);
+    --line-strong: rgba(22, 20, 15, .82);
+    --accent: #E23A16;
+    --on-accent: #FFF7F1;
+    --max: 1240px;
+    --pad: clamp(20px, 4.5vw, 72px);
+    --display: 'Bricolage Grotesque', 'Cairo', system-ui, sans-serif;
+    --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ease: cubic-bezier(.22, .9, .16, 1);
+  }
+  :root[data-theme="dark"] {
+    --paper: #14120E;
+    --paper-deep: #1C1914;
+    --ink: #EFEAE0;
+    --soft: rgba(239, 234, 224, .6);
+    --line: rgba(239, 234, 224, .18);
+    --line-strong: rgba(239, 234, 224, .82);
+    --accent: #FF5A33;
+    --on-accent: #14120E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #14120E;
+      --paper-deep: #1C1914;
+      --ink: #EFEAE0;
+      --soft: rgba(239, 234, 224, .6);
+      --line: rgba(239, 234, 224, .18);
+      --line-strong: rgba(239, 234, 224, .82);
+      --accent: #FF5A33;
+      --on-accent: #14120E;
+    }
+  }
 
-    <!-- Favicon with KOBI style -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Ctext x='50%25' y='68%25' font-size='64' fill='%23ff3333' text-anchor='middle' font-family='Arial, sans-serif' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--display); font-size: 17px; line-height: 1.6;
+    padding-top: 64px; overflow-x: hidden;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  html[lang="ar"] body { font-family: 'Cairo', var(--display); line-height: 1.8; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  ::selection { background: var(--accent); color: var(--on-accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'space': ['Space Grotesk', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+  .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--pad); }
+  .mono {
+    font-family: var(--mono); font-size: 10.5px; line-height: 1.5;
+    letter-spacing: .14em; text-transform: uppercase;
+  }
+  html[lang="ar"] .mono { font-family: 'Cairo', var(--mono); font-size: 12px; letter-spacing: 0; text-transform: none; }
+  .skip {
+    position: fixed; inset-inline-start: 12px; top: -60px; z-index: 200;
+    background: var(--ink); color: var(--paper); padding: 10px 16px;
+  }
+  .skip:focus { top: 12px; }
+  .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&display=swap');
+  /* ── Header ── */
+  .site-head {
+    position: fixed; inset: 0 0 auto 0; z-index: 80;
+    background: var(--paper); border-bottom: 1px solid var(--line-strong);
+  }
+  .head-inner { display: flex; align-items: center; gap: 16px; min-height: 63px; padding-inline: var(--pad); }
+  .logo { font-size: 21px; font-weight: 800; letter-spacing: -.045em; line-height: 1; direction: ltr; }
+  .logo i { font-style: normal; color: var(--accent); }
+  nav { display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); margin-inline: auto; }
+  nav a {
+    position: relative; padding: 5px 0; white-space: nowrap;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+  }
+  html[lang="ar"] nav a { font-family: 'Cairo', var(--mono); font-size: 13px; letter-spacing: 0; text-transform: none; }
+  nav a::after {
+    content: ""; position: absolute; inset: auto 0 0 0; height: 1px; background: var(--accent);
+    transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s var(--ease);
+  }
+  [dir="rtl"] nav a::after { transform-origin: 100% 50%; }
+  nav a:hover::after, nav a[aria-current="true"]::after { transform: scaleX(1); }
+  nav a[aria-current="true"] { color: var(--accent); }
+  .head-tools { display: flex; align-items: center; gap: 6px; }
+  .tool {
+    display: grid; place-items: center; min-width: 36px; height: 33px; padding-inline: 8px;
+    border: 1px solid var(--line-strong); font-family: var(--mono); font-size: 11px;
+    transition: background-color .2s, color .2s;
+  }
+  .tool:hover { background: var(--ink); color: var(--paper); }
+  .tool svg { width: 14px; height: 14px; }
+  @media (max-width: 820px) {
+    body { padding-top: 98px; }
+    .head-inner { flex-wrap: wrap; padding-block: 10px 0; row-gap: 2px; }
+    .logo { margin-inline-end: auto; }
+    .head-tools { order: 2; }
+    nav { order: 3; width: 100%; margin-inline: 0; gap: 22px; overflow-x: auto; scrollbar-width: none; padding-block: 2px 4px; }
+    nav a { padding-block: 9px; }
+    nav::-webkit-scrollbar { display: none; }
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  /* ── Hero ── */
+  .hero { text-align: center; padding-block: clamp(48px, 8vh, 104px) clamp(36px, 5vh, 64px); }
+  .kicker { display: inline-flex; align-items: center; gap: 10px; color: var(--soft); }
+  .kicker::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .hero h1 {
+    margin-top: 24px;
+    font-size: clamp(3rem, 8.6vw, 7.2rem);
+    font-weight: 700; line-height: .92; letter-spacing: -.05em;
+  }
+  .hero h1 .amp { color: var(--accent); font-weight: 500; }
+  html[lang="ar"] .hero h1 .amp { display: none; }
+  html[lang="ar"] .hero h1 { font-size: clamp(2.6rem, 7vw, 6rem); line-height: 1.25; letter-spacing: 0; }
+  .hero-lede {
+    max-width: 58ch; margin: 26px auto 0; color: var(--soft);
+    font-size: clamp(1.02rem, 1.3vw, 1.16rem); text-wrap: pretty;
+  }
+  html[lang="ar"] .hero-lede { line-height: 1.95; }
+  .hero-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; padding: 13px 18px;
+    border: 1px solid var(--line-strong); background: var(--ink); color: var(--paper);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+    transition: background-color .2s, color .2s, border-color .2s;
+  }
+  html[lang="ar"] .btn { font-family: 'Cairo', var(--mono); font-size: 14px; letter-spacing: 0; text-transform: none; }
+  .btn svg { width: 12px; height: 12px; }
+  .btn:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .link {
+    display: inline-flex; align-items: center; gap: 8px; padding: 13px 2px;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase;
+    border-bottom: 1px solid var(--line-strong); transition: color .2s, border-color .2s;
+  }
+  html[lang="ar"] .link { font-family: 'Cairo', var(--mono); font-size: 14px; letter-spacing: 0; text-transform: none; }
+  .link:hover { color: var(--accent); border-color: var(--accent); }
 
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-            scroll-behavior: smooth;
-            cursor: none;
-            overflow-x: hidden;
-        }
+  .split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    max-width: 860px; margin: clamp(44px, 7vw, 76px) auto 0;
+    border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+    text-align: start;
+  }
+  .split a {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+    padding: 15px 20px; color: var(--soft);
+    transition: background-color .2s, color .2s;
+  }
+  .split a:first-child { border-inline-end: 1px solid var(--line); }
+  .split a:hover { background: var(--paper-deep); color: var(--ink); }
+  .split span { font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em; text-transform: uppercase; }
+  html[lang="ar"] .split span { font-family: 'Cairo', sans-serif; font-size: 12px; letter-spacing: 0; text-transform: none; }
+  .split b { font-size: 1.5rem; font-weight: 700; letter-spacing: -.03em; color: var(--ink); }
+  @media (max-width: 620px) {
+    .split { grid-template-columns: 1fr; }
+    .split a:first-child { border-inline-end: 0; border-bottom: 1px solid var(--line); }
+  }
+  /* ── Sections ── */
+  .section { padding-block: clamp(48px, 6.5vw, 88px); }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    border-top: 1px solid var(--line-strong); padding-top: 11px;
+    margin-bottom: clamp(22px, 3vw, 36px);
+  }
+  .section-head .side { color: var(--soft); text-align: end; }
+  .section-title {
+    font-size: clamp(1.95rem, 4vw, 3.4rem); font-weight: 700; line-height: 1;
+    letter-spacing: -.04em; max-width: 20ch; text-wrap: balance;
+  }
+  html[lang="ar"] .section-title { line-height: 1.3; letter-spacing: 0; max-width: 24ch; }
+  .section-lede { max-width: 58ch; margin-top: 16px; color: var(--soft); }
+  html[lang="ar"] .section-lede { line-height: 1.95; }
 
-        /* Noise overlay */
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9990;
-            opacity: 0.04;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            mix-blend-mode: overlay;
-        }
+  /* ── Thumbnails ── */
+  .thumb-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(22px, 3vw, 38px) clamp(16px, 2.4vw, 30px);
+    margin-top: clamp(28px, 4vw, 48px);
+  }
+  .card { margin: 0; }
+  .card--wide { grid-column: 1 / -1; }
+  .shot {
+    position: relative; display: block; width: 100%; padding: 0; overflow: hidden;
+    border: 1px solid var(--line-strong); background: #0c0b09;
+  }
+  .shot img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+  .shot:hover { border-color: var(--accent); }
+  .shot:hover img { opacity: .92; }
+  .shot-view {
+    position: absolute; inset-block-end: 0; inset-inline-end: 0;
+    padding: 6px 10px; background: var(--paper); color: var(--ink);
+    border-inline-start: 1px solid var(--ink); border-block-start: 1px solid var(--ink);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .thumb-meta {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: baseline;
+    margin-top: 10px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .thumb-meta .idx { color: var(--accent); }
+  .thumb-meta .ttl { font-family: var(--display); font-size: 1rem; font-weight: 600; letter-spacing: -.01em; text-transform: none; }
+  html[lang="ar"] .thumb-meta { font-family: 'Cairo', sans-serif; font-size: 12px; letter-spacing: 0; text-transform: none; }
+  html[lang="ar"] .thumb-meta .ttl { font-family: 'Cairo', sans-serif; }
+  .thumb-meta .cat { color: var(--soft); text-align: end; }
+  @media (max-width: 720px) {
+    .thumb-grid { grid-template-columns: 1fr; }
+    .thumb-meta { grid-template-columns: auto 1fr; row-gap: 2px; }
+    .thumb-meta .cat { grid-column: 2; text-align: start; }
+    .shot-view { display: none; }
+  }
 
-        /* Progress bar */
-        #playhead {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ff2a2a, #ff6a6a);
-            z-index: 10000;
-            transition: width 0.08s ease-out;
-            box-shadow: 0 0 12px #ff3a3a;
-            width: 0%;
-        }
+  /* ── Games ── */
+  .game-list { border-top: 1px solid var(--line-strong); margin-top: clamp(26px, 3.5vw, 42px); }
+  .game {
+    display: grid;
+    grid-template-columns: 42px minmax(0, .9fr) minmax(0, 1.35fr) auto 20px;
+    gap: 20px; align-items: baseline; padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    transition: background-color .2s, color .2s;
+  }
+  .game:hover { background: var(--paper-deep); }
+  .game .n { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--soft); }
+  .game h3 { font-size: clamp(1.15rem, 2.1vw, 1.65rem); font-weight: 600; letter-spacing: -.025em; }
+  html[lang="ar"] .game h3 { font-family: 'Cairo', sans-serif; letter-spacing: 0; }
+  .game p { font-size: .95rem; color: var(--soft); max-width: 46ch; }
+  .game .meta {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--soft); white-space: nowrap;
+  }
+  .game .go { font-size: 1.1rem; line-height: 1; color: var(--soft); }
+  .game:hover h3, .game:hover .go { color: var(--accent); }
+  html[lang="ar"] .game .meta, html[lang="ar"] .game .n { font-family: 'Cairo', sans-serif; font-size: 11px; letter-spacing: 0; text-transform: none; }
+  @media (max-width: 880px) {
+    .game { grid-template-columns: 26px minmax(0, 1fr) auto; row-gap: 5px; }
+    .game .n { grid-row: 1; grid-column: 1; }
+    .game h3 { grid-row: 1; grid-column: 2; }
+    .game .go { grid-row: 1; grid-column: 3; }
+    .game p { grid-row: 2; grid-column: 2 / -1; }
+    .game .meta { grid-row: 3; grid-column: 2 / -1; }
+  }
+  .all-games { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 22px; color: var(--soft); }
+  .all-games .link { border-bottom: 0; color: var(--ink); }
 
-        /* Custom cursor */
-        #custom-cursor {
-            width: 8px;
-            height: 8px;
-            background: #ffffff;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10001;
-            mix-blend-mode: difference;
-            transform: translate(-50%, -50%);
-        }
+  /* ── About ── */
+  .about-grid {
+    display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, .55fr);
+    gap: clamp(30px, 6vw, 80px); margin-top: clamp(24px, 3vw, 38px);
+  }
+  .about-copy p { color: var(--soft); font-size: clamp(1.02rem, 1.25vw, 1.14rem); max-width: 64ch; }
+  .about-copy p + p { margin-top: 16px; }
+  html[lang="ar"] .about-copy p { line-height: 1.95; }
+  .facts { border-top: 1px solid var(--line-strong); align-self: start; }
+  .fact { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .fact span { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+  .fact b { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; text-align: end; }
+  html[lang="ar"] .fact span { font-family: 'Cairo', sans-serif; font-size: 11px; letter-spacing: 0; text-transform: none; }
+  html[lang="ar"] .fact b { font-family: 'Cairo', sans-serif; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; } }
 
-        #cursor-outline {
-            width: 42px;
-            height: 42px;
-            border: 1.5px solid rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, border-color 0.2s;
-        }
+  /* ── Contact ── */
+  .mail {
+    display: inline-block; margin-top: clamp(22px, 3vw, 34px);
+    font-size: clamp(1.35rem, 4.6vw, 3.7rem); font-weight: 700; letter-spacing: -.035em; line-height: 1.12;
+    border-bottom: 2px solid var(--line-strong); padding-bottom: .1em;
+    overflow-wrap: anywhere; transition: color .2s, border-color .2s;
+  }
+  .mail:hover { color: var(--accent); border-color: var(--accent); }
+  .mail-note { margin-top: 12px; color: var(--soft); max-width: 54ch; }
+  .social { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line-strong); margin-top: clamp(30px, 4vw, 52px); }
+  .social > * {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+    width: 100%; padding: 16px 14px 16px 0; text-align: start;
+    border-bottom: 1px solid var(--line); border-inline-end: 1px solid var(--line);
+    transition: background-color .2s, color .2s;
+  }
+  .social > *:nth-child(5n) { border-inline-end: 0; }
+  .social > *:hover { background: var(--ink); color: var(--paper); padding-inline-start: 14px; }
+  .social b { font-size: 1.02rem; font-weight: 600; letter-spacing: -.015em; }
+  html[lang="ar"] .social b { font-family: 'Cairo', sans-serif; }
+  .social small { font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em; color: var(--soft); }
+  .social > *:hover small { color: inherit; opacity: .7; }
+  @media (max-width: 900px) {
+    .social { grid-template-columns: 1fr 1fr; }
+    .social > *:nth-child(5n) { border-inline-end: 1px solid var(--line); }
+    .social > *:nth-child(2n) { border-inline-end: 0; }
+  }
+  @media (max-width: 460px) { .social { grid-template-columns: 1fr; } .social > * { border-inline-end: 0; } }
 
-        /* Gradient text */
-        .gradient-text {
-            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 50%, #ffffff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
+  .contact-foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-top: clamp(32px, 4vw, 52px); padding: 15px 18px;
+    border: 1px solid var(--line-strong); background: var(--paper-deep);
+  }
+  .contact-foot p { display: flex; align-items: center; gap: 10px; color: var(--soft); }
+  .contact-foot p::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  footer {
+    display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding-block: 22px 34px; border-top: 1px solid var(--line); color: var(--soft);
+  }
+  footer a:hover { color: var(--accent); }
 
-        /* Reveal animation */
-        .reveal {
-            opacity: 0;
-            transform: translateY(35px);
-            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s ease;
-        }
+  /* ── Lightbox ── */
+  .lb {
+    width: min(1060px, calc(100vw - 32px)); max-height: calc(100svh - 32px);
+    margin: auto; padding: 0; border: 1px solid var(--line-strong);
+    background: var(--paper); color: var(--ink); overflow: auto;
+  }
+  .lb::backdrop { background: rgba(10, 9, 7, .85); }
+  .lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 9px 13px; border-bottom: 1px solid var(--line); }
+  .lb-bar .mono { color: var(--soft); }
+  .lb-close { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 6px 8px; border: 1px solid var(--line-strong); }
+  .lb-close:hover { background: var(--ink); color: var(--paper); }
+  .lb img { width: 100%; height: auto; background: #0c0b09; }
+  .lb-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 13px; border-top: 1px solid var(--line); }
+  .lb-foot h3 { font-size: 1.08rem; font-weight: 600; letter-spacing: -.01em; }
+  .lb-foot p { color: var(--soft); font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+  html[lang="ar"] .lb-foot p { font-family: 'Cairo', sans-serif; font-size: 12px; letter-spacing: 0; text-transform: none; }
+  .lb-nav { display: flex; gap: 8px; }
+  .lb-nav button { padding: 8px 12px; border: 1px solid var(--line-strong); font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+  .lb-nav button:hover:not(:disabled) { background: var(--ink); color: var(--paper); }
+  .lb-nav button:disabled { opacity: .35; cursor: not-allowed; }
+  body:has(dialog[open]) { overflow: hidden; }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* 3D THUMBNAIL EFFECT — NO ZOOM, ONLY 3D ROTATION */
-        .thumbnail-3d {
-            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.6, 1.1), box-shadow 0.4s ease;
-            transform-style: preserve-3d;
-            perspective: 1200px;
-            will-change: transform;
-            cursor: pointer;
-            border-radius: 20px;
-            box-shadow: 0 20px 30px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            background: #0a0a0a;
-        }
-
-        .thumbnail-3d img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 20px;
-            transition: filter 0.3s ease;
-            pointer-events: none;
-        }
-
-        .thumbnail-3d:hover img {
-            filter: brightness(1.02) contrast(1.02);
-        }
-
-        /* Glass navbar */
-        .glass-nav {
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        nav a {
-            transition: color 0.2s, text-shadow 0.2s;
-        }
-
-        nav a:hover {
-            color: #ff4d4d;
-            text-shadow: 0 0 6px rgba(255, 77, 77, 0.5);
-        }
-
-        /* Thumbnail grid */
-        .thumbnail-grid {
-            display: grid;
-            gap: 2rem;
-            grid-template-columns: 1fr;
-        }
-
-        @media (min-width: 768px) {
-            .thumbnail-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Discord badge style */
-        .discord-badge {
-            background: #5865F2;
-            transition: all 0.2s ease;
-        }
-        .discord-badge:hover {
-            background: #4752c4;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive cursor hide on touch */
-        @media (max-width: 768px) {
-            body { cursor: auto; }
-            #custom-cursor, #cursor-outline { display: none; }
-        }
-    </style>
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
 </head>
 <body>
+<a class="skip mono" href="#thumbnails" data-i18n="skip">Skip to work</a>
 
-<div class="noise"></div>
-<div id="playhead"></div>
-<div id="custom-cursor"></div>
-<div id="cursor-outline"></div>
-
-<!-- Navigation -->
-<nav class="fixed w-full z-50 glass-nav transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
-        <div class="text-2xl md:text-3xl font-black tracking-tighter italic flex items-center gap-1">
-            KOBI<span class="text-red-500 text-3xl md:text-4xl">.</span>
-            <span class="text-[10px] font-light tracking-wide text-gray-400 ml-2 hidden sm:inline-block">THUMBNAILS</span>
-        </div>
-
-        <div class="hidden md:flex space-x-10 text-sm font-medium uppercase tracking-wider">
-            <a href="#home">Home</a>
-            <a href="#thumbnails">Thumbnails</a>
-            <a href="#contact">Contact</a>
-        </div>
-
-        <div class="md:hidden text-xs text-gray-400">🎨</div>
+<header class="site-head">
+  <div class="head-inner">
+    <a class="logo" href="#top" aria-label="Kobi — home">KOBI<i>.</i></a>
+    <nav aria-label="Main">
+      <a href="#thumbnails" data-i18n="nav_thumbs">Thumbnails</a>
+      <a href="#games" data-i18n="nav_games">Games</a>
+      <a href="#about" data-i18n="nav_about">About</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
+    </nav>
+    <div class="head-tools">
+      <button class="tool" id="langBtn" type="button" aria-label="Switch to Arabic">ع</button>
+      <button class="tool" id="themeBtn" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg>
+      </button>
     </div>
-</nav>
+  </div>
+</header>
 
-<!-- HERO Section -->
-<section id="home" class="min-h-screen flex items-center justify-center text-center px-6 relative overflow-hidden">
-    <div class="reveal active z-10">
-        <h1 class="text-7xl md:text-9xl lg:text-[8rem] font-black gradient-text tracking-tighter">
-            KOBI.
-        </h1>
-        <p class="text-gray-300 mt-6 text-lg md:text-xl tracking-wide max-w-2xl mx-auto">
-            <span class="text-red-400 font-semibold">Thumbnail Designer</span> — Hight Quilty | High-CTR Covers | Gaming & Deco ...
-        </p>
-        <div class="mt-10 flex justify-center gap-4 flex-wrap">
-            <a href="#thumbnails" class="px-6 py-2 border border-white/20 rounded-full text-sm hover:bg-white/5 transition backdrop-blur-sm">View Portfolio</a>
-            <a href="#contact" class="px-6 py-2 bg-red-600/80 rounded-full text-sm hover:bg-red-700 transition shadow-lg">Hire Me</a>
-        </div>
+<main id="top">
+  <!-- ── Hero ── -->
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <p class="kicker mono" data-i18n="kicker">Kobi — Morocco</p>
+    <h1 id="hero-title">
+      <span data-i18n="hero_h1a">Thumbnails</span><br>
+      <span class="amp">&amp;</span> <span data-i18n="hero_h1b">games.</span>
+    </h1>
+    <p class="hero-lede" data-i18n="hero_lede">I'm Kobi, from Morocco. I don't make thumbnails with random colours, and I don't ship games that still feel like prototypes. Two crafts, one standard: a clear idea, finished properly.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#thumbnails">
+        <span data-i18n="hero_cta1">See thumbnails</span>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 1v10M2 7l4 4 4-4"/></svg>
+      </a>
+      <a class="link" href="#games" data-i18n="hero_cta2">Play the games</a>
     </div>
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce opacity-40">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 5v14m0 0l-6-6m6 6l6-6"/></svg>
-    </div>
-</section>
 
-<!-- THUMBNAILS SECTION — LOCAL IMAGES: thumb-01.png to thumb-05.png -->
-<section id="thumbnails" class="py-28 px-6 bg-neutral-950/90 relative">
-    <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16 reveal">
-            <h2 class="text-4xl md:text-5xl font-bold tracking-tight inline-block bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Thumbnail Gallery</h2>
-            <div class="w-20 h-1 bg-red-600 mx-auto mt-4 rounded-full"></div>
-            <p class="text-gray-400 mt-5 max-w-2xl mx-auto">Hover any thumbnail — <strong class="text-white"></strong> </p>
-        </div>
-
-        <!-- Thumbnail Grid: 5 local images (thumb-01.png to thumb-05.png) -->
-        <div class="thumbnail-grid" id="thumbnailGrid">
-            <div class="thumbnail-3d" data-index="0">
-                <img src="thumb-01.png" alt="Thumbnail Design 1 - High CTR Gaming" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/104/800/600';">
-            </div>
-            <div class="thumbnail-3d" data-index="1">
-                <img src="thumb-02.png" alt="Thumbnail Design 2 - Epic Battle Cover" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/106/800/600';">
-            </div>
-            <div class="thumbnail-3d" data-index="2">
-                <img src="thumb-03.png" alt="Thumbnail Design 3 - Cinematic Style" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/155/800/600';">
-            </div>
-            <div class="thumbnail-3d" data-index="3">
-                <img src="thumb-04.png" alt="Thumbnail Design 4 - Action Packed" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/169/800/600';">
-            </div>
-            <div class="thumbnail-3d" data-index="4">
-                <img src="thumb-05.png" alt="Thumbnail Design 5 - Creative Fantasy" loading="eager" onerror="this.onerror=null; this.src='https://picsum.photos/id/26/800/600';">
-            </div>
-        </div>
-        
-        <div class="text-center mt-12 text-gray-500 text-sm reveal">
-            ✨ 1+ years experience | 50+ thumbnails designed | Hight Quilty
-        </div>
+    <div class="split">
+      <a href="#thumbnails">
+        <span data-i18n="split1">01 · Thumbnail design</span>
+        <b>50%</b>
+      </a>
+      <a href="#games">
+        <span data-i18n="split2">02 · Game development</span>
+        <b>50%</b>
+      </a>
     </div>
-</section>
+  </section>
 
-<!-- CONTACT SECTION — replaced phone with Discord: kobix2 & removed video section -->
-<section id="contact" class="py-28 px-6 text-center bg-gradient-to-t from-neutral-950 to-black relative">
-    <div class="max-w-3xl mx-auto reveal">
-        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Let's Create Together</h2>
-        <div class="w-16 h-0.5 bg-red-500 mx-auto my-6"></div>
-        <p class="text-gray-300 text-lg">I specialize only in <span class="text-white font-semibold">Thumbnail Design</span> — high-impact, click-worthy, and cinematic.</p>
-        
-        <!-- Contact options: Discord username (kobix2) + email -->
-        <div class="mt-12 flex flex-col md:flex-row gap-6 justify-center items-center">
-            <!-- Discord Card -->
-            <a href="https://discord.com/users/kobix2" target="_blank" rel="noopener noreferrer" 
-               class="discord-badge group flex items-center gap-3 bg-[#5865F2] hover:bg-[#4752c4] px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-2xl">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                </svg>
-                <span>Discord: @kobix1</span>
-                <span class="group-hover:translate-x-1 transition">→</span>
-            </a>
-            
-            <!-- Email option -->
-            <a href="mailto:kobi.thumbnails@example.com" class="group bg-neutral-800 hover:bg-neutral-700 px-8 py-4 rounded-2xl font-bold text-lg transition-all flex items-center gap-2 border border-white/10">
-                ✉️ KobiBess@gmail.com
-            </a>
-        </div>
-        
-        <!-- Experience highlight -->
-        <div class="mt-12 p-5 rounded-2xl bg-white/5 border border-white/10 inline-block">
-            <p class="text-sm font-mono text-gray-300">🎯 1.5+ Years Experience • Content Creator In Youtube</p>
-        </div>
-        
-        <p class="text-xs text-gray-600 mt-8">© KOBI — Thumbnail Designer | Kobi Portfolio</p>
+  <!-- ── Thumbnails ── -->
+  <section class="section wrap" id="thumbnails" aria-labelledby="thumbs-title">
+    <div class="section-head mono">
+      <span data-i18n="thumbs_label">01 — Thumbnails</span>
+      <span class="side" data-i18n="thumbs_side">07 selected</span>
     </div>
-</section>
+    <h2 class="section-title" id="thumbs-title" data-i18n="thumbs_title">Covers that read at a glance.</h2>
+    <p class="section-lede" data-i18n="thumbs_lede">Selected YouTube work for gaming, commentary and tech channels. One idea per frame, type that survives a phone screen, contrast that holds up in a crowded feed.</p>
+
+    <div class="thumb-grid">
+      <figure class="card card--wide">
+        <button class="shot" type="button" data-index="0" aria-label="Open cover: Thumbnails">
+          <img src="assets/work/thumbnails.jpg" alt="Green cover with the word THUMBNAILS in large white type, a thinking creator, and two smaller example covers on either side." width="1280" height="720" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">01</span><span class="ttl">Thumbnails</span><span class="cat" data-i18n="cat_edu">Education</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="1" aria-label="Open cover: Banality">
+          <img src="assets/work/banality.jpg" alt="Red and black cover titled Banality with a wide-eyed creator, plus YouTube and TikTok logos." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">02</span><span class="ttl">Banality</span><span class="cat" data-i18n="cat_commentary">Commentary</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="2" aria-label="Open cover: Stoat vs Discord">
+          <img src="assets/work/stoat-vs-discord.jpg" alt="Crime-scene cover with a Discord logo, devil horns, an 18+ sticker, bullet holes and warning tape." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">03</span><span class="ttl">Stoat vs Discord</span><span class="cat" data-i18n="cat_drama">Platform drama</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="3" aria-label="Open cover: Earn Quickly">
+          <img src="assets/work/earn-quickly.jpg" alt="Bright green cover filled with banknotes, a Shopify sale notification on a phone, and the words EARN QUICKLY." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">04</span><span class="ttl">Earn Quickly</span><span class="cat" data-i18n="cat_economy">Creator economy</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="4" aria-label="Open cover: AI Pricing">
+          <img src="assets/work/ai-pricing.jpg" alt="Dark cover comparing Perplexity at 17 dollars a month with Gemini at 7.99 dollars, next to a confused creator." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">05</span><span class="ttl">AI Pricing</span><span class="cat" data-i18n="cat_tech">Tech</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="5" aria-label="Open cover: Drama">
+          <img src="assets/work/drama.jpg" alt="Red Minecraft cover with three characters labelled in Arabic, meaning drama, atheist and quit." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">06</span><span class="ttl">Drama</span><span class="cat" data-i18n="cat_minecraft">Minecraft</span>
+        </figcaption>
+      </figure>
+
+      <figure class="card">
+        <button class="shot" type="button" data-index="6" aria-label="Open cover: No Assets">
+          <img src="assets/work/no-assets.jpg" alt="Black and red Arabic Minecraft cover reading without assets, with a red storefront and controller icon." width="1280" height="720" loading="lazy" decoding="async">
+          <span class="shot-view" aria-hidden="true">View ↗</span>
+        </button>
+        <figcaption class="thumb-meta">
+          <span class="idx">07</span><span class="ttl">No Assets</span><span class="cat" data-i18n="cat_minecraft_ar">Minecraft · Arabic</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ── Games ── -->
+  <section class="section wrap" id="games" aria-labelledby="games-title">
+    <div class="section-head mono">
+      <span data-i18n="games_label">02 — Games</span>
+      <span class="side" data-i18n="games_side">Godot · 06 released</span>
+    </div>
+    <h2 class="section-title" id="games-title" data-i18n="games_title">Games I finished, not just started.</h2>
+    <p class="section-lede" data-i18n="games_lede">Small Godot games — some built in a single hour for a jam, some over a few weeks. All playable, all released.</p>
+
+    <div class="game-list">
+      <a class="game" href="https://kobi-21.itch.io/broken" target="_blank" rel="noopener">
+        <span class="n">01</span>
+        <h3>Broken</h3>
+        <p data-i18n="game1d">A short game made for Sop Game Jam 2026.</p>
+        <span class="meta" data-i18n="game1m">Game jam · 2026</span>
+        <span class="go" aria-hidden="true">↗</span>
+      </a>
+      <a class="game" href="https://kobi-21.itch.io/one-more-click" target="_blank" rel="noopener">
+        <span class="n">02</span>
+        <h3>One More Click!</h3>
+        <p data-i18n="game2d">Built for GMTK Game Jam.</p>
+        <span class="meta" data-i18n="game2m">Game jam</span>
+        <span class="go" aria-hidden="true">↗</span>
+      </a>
+      <a class="game" href="https://kobi-21.itch.io/the-annoying-ball" target="_blank" rel="noopener">
+        <span class="n">03</span>
+        <h3>The Annoying Ball</h3>
+        <p data-i18n="game3d">A ball follows you through a maze. One touch against a wall ends the run.</p>
+        <span class="meta" data-i18n="game3m">Puzzle · 1 hour</span>
+        <span class="go" aria-hidden="true">↗</span>
+      </a>
+      <a class="game" href="https://kobi-21.itch.io/weird-gharib" target="_blank" rel="noopener">
+        <span class="n">04</span>
+        <h3>Weird — غريب</h3>
+        <p data-i18n="game4d">A small puzzle experiment, titled in Arabic.</p>
+        <span class="meta" data-i18n="game4m">Puzzle · Bilingual</span>
+        <span class="go" aria-hidden="true">↗</span>
+      </a>
+      <a class="game" href="https://kobi-21.itch.io/remember-me" target="_blank" rel="noopener">
+        <span class="n">05</span>
+        <h3>Remember Me!</h3>
+        <p data-i18n="game5d">Remember the path and avoid the fake platforms.</p>
+        <span class="meta" data-i18n="game5m">Puzzle · Memory</span>
+        <span class="go" aria-hidden="true">↗</span>
+      </a>
+    </div>
+
+    <div class="all-games">
+      <p class="mono" data-i18n="games_note">Also on itch.io: Cat Mazz and KDOCS.</p>
+      <a class="link" href="https://kobi-21.itch.io" target="_blank" rel="noopener" data-i18n="games_all">All games on itch.io</a>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section class="section wrap" id="about" aria-labelledby="about-title">
+    <div class="section-head mono">
+      <span data-i18n="about_label">03 — About</span>
+      <span class="side" data-i18n="about_side">Designer · Developer</span>
+    </div>
+    <h2 class="section-title" id="about-title" data-i18n="about_title">Two crafts, same approach.</h2>
+
+    <div class="about-grid">
+      <div class="about-copy">
+        <p data-i18n="about_p1">I'm Kobi, a Moroccan designer and developer. I make thumbnails for YouTube creators and games in Godot. I didn't pick one because I like both halves of the work: the image that earns attention, and the system underneath it.</p>
+        <p data-i18n="about_p2">I work in English and Arabic. Whatever the format, the standard stays the same — a clear idea, finished properly, delivered on time.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><span data-i18n="f1l">Based in</span><b data-i18n="f1v">Morocco</b></div>
+        <div class="fact"><span data-i18n="f2l">Focus</span><b data-i18n="f2v">Thumbnails + Godot</b></div>
+        <div class="fact"><span data-i18n="f3l">Languages</span><b data-i18n="f3v">English · Arabic</b></div>
+        <div class="fact"><span data-i18n="f4l">Games</span><b data-i18n="f4v">6 on itch.io</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ── -->
+  <section class="section wrap" id="contact" aria-labelledby="contact-title">
+    <div class="section-head mono">
+      <span data-i18n="contact_label">04 — Contact</span>
+      <span class="side" data-i18n="contact_side">Open for commissions</span>
+    </div>
+    <h2 class="section-title" id="contact-title" data-i18n="contact_title">Have a thumbnail or a game in mind?</h2>
+    <p class="section-lede" data-i18n="contact_lede">Tell me what you're making and when you need it. I'll reply with availability and a quote, usually within a day.</p>
+
+    <a class="mail" href="mailto:KobiBessn@gmail.com">KobiBessn@gmail.com</a>
+    <p class="mail-note mono" data-i18n="contact_note">Email is fastest for briefs and files.</p>
+
+    <div class="social">
+      <button type="button" id="discordBtn" aria-label="Copy Discord username kobix1">
+        <b>Discord</b>
+        <small><span id="discordUser">kobix1</span> · <span id="copyLabel" data-i18n="soc_copy">copy</span></small>
+      </button>
+      <a href="https://instagram.com/kobix12" target="_blank" rel="noopener"><b>Instagram</b><small>@kobix12</small></a>
+      <a href="https://x.com/kobi20x" target="_blank" rel="noopener"><b>X</b><small>@kobi20x</small></a>
+      <a href="https://youtube.com/@kobiS21" target="_blank" rel="noopener"><b>YouTube</b><small>@kobiS21</small></a>
+      <a href="https://kobi-21.itch.io" target="_blank" rel="noopener"><b>itch.io</b><small>kobi-21</small></a>
+    </div>
+    <p class="sr" id="copyStatus" role="status" aria-live="polite"></p>
+
+    <div class="contact-foot">
+      <p class="mono" data-i18n="contact_foot">Open for commissions · Remote, worldwide</p>
+      <a class="link" href="#top" data-i18n="back_top">Back to top ↑</a>
+    </div>
+
+    <footer class="mono">
+      <span data-i18n="footer_left">© 2026 Kobi — all rights reserved</span>
+      <span data-i18n="footer_right">Designed and built by hand</span>
+    </footer>
+  </section>
+</main>
+
+<dialog class="lb" id="lightbox" aria-labelledby="lbTitle">
+  <div class="lb-bar">
+    <span class="mono" id="lbCount">01 / 07</span>
+    <button class="lb-close" id="lbClose" type="button" data-i18n="lb_close">Close ✕</button>
+  </div>
+  <img id="lbImg" alt="">
+  <div class="lb-foot">
+    <div>
+      <h3 id="lbTitle">—</h3>
+      <p id="lbCat">—</p>
+    </div>
+    <div class="lb-nav">
+      <button id="lbPrev" type="button" data-i18n="lb_prev">← Previous</button>
+      <button id="lbNext" type="button" data-i18n="lb_next">Next →</button>
+    </div>
+  </div>
+</dialog>
 
 <script>
-    // ============================================
-    // BUG FIXES & ENHANCEMENTS:
-    // 1. Phone number replaced with Discord: kobix2
-    // 2. Video section completely removed
-    // 3. Local thumbnails: thumb-01.png to thumb-05.png (with fallback)
-    // 4. 3D effect preserved, NO zoom scaling
-    // 5. All cursor + scrollbar + reveal fixed
-    // ============================================
-    
-    // ---- Cursor tracking ----
-    const cursorDot = document.getElementById("custom-cursor");
-    const cursorOutline = document.getElementById("cursor-outline");
-    const playhead = document.getElementById("playhead");
+(function () {
+  'use strict';
 
-    if (cursorDot && cursorOutline) {
-        window.addEventListener("mousemove", (e) => {
-            cursorDot.style.left = e.clientX + "px";
-            cursorDot.style.top = e.clientY + "px";
-            cursorOutline.style.left = e.clientX + "px";
-            cursorOutline.style.top = e.clientY + "px";
-        });
-
-        const interactiveElements = document.querySelectorAll('a, button, .thumbnail-3d, [href]');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.width = "60px";
-                cursorOutline.style.height = "60px";
-                cursorOutline.style.borderColor = "#ff4d4d";
-                cursorOutline.style.borderWidth = "2px";
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.width = "42px";
-                cursorOutline.style.height = "42px";
-                cursorOutline.style.borderColor = "rgba(255, 255, 255, 0.7)";
-                cursorOutline.style.borderWidth = "1.5px";
-            });
-        });
+  var T = {
+    en: {
+      skip: 'Skip to work',
+      nav_thumbs: 'Thumbnails', nav_games: 'Games', nav_about: 'About', nav_contact: 'Contact',
+      kicker: 'Kobi — Morocco',
+      hero_h1a: 'Thumbnails', hero_h1b: 'games.',
+      hero_lede: "I'm Kobi, from Morocco. I don't make thumbnails with random colours, and I don't ship games that still feel like prototypes. Two crafts, one standard: a clear idea, finished properly.",
+      hero_cta1: 'See thumbnails', hero_cta2: 'Play the games',
+      split1: '01 · Thumbnail design', split2: '02 · Game development',
+      thumbs_label: '01 — Thumbnails', thumbs_side: '07 selected',
+      thumbs_title: 'Covers that read at a glance.',
+      thumbs_lede: 'Selected YouTube work for gaming, commentary and tech channels. One idea per frame, type that survives a phone screen, contrast that holds up in a crowded feed.',
+      cat_edu: 'Education', cat_commentary: 'Commentary', cat_drama: 'Platform drama',
+      cat_economy: 'Creator economy', cat_tech: 'Tech', cat_minecraft: 'Minecraft', cat_minecraft_ar: 'Minecraft · Arabic',
+      games_label: '02 — Games', games_side: 'Godot · 06 released',
+      games_title: 'Games I finished, not just started.',
+      games_lede: 'Small Godot games — some built in a single hour for a jam, some over a few weeks. All playable, all released.',
+      game1d: 'A short game made for Sop Game Jam 2026.', game1m: 'Game jam · 2026',
+      game2d: 'Built for GMTK Game Jam.', game2m: 'Game jam',
+      game3d: 'A ball follows you through a maze. One touch against a wall ends the run.', game3m: 'Puzzle · 1 hour',
+      game4d: 'A small puzzle experiment, titled in Arabic.', game4m: 'Puzzle · Bilingual',
+      game5d: 'Remember the path and avoid the fake platforms.', game5m: 'Puzzle · Memory',
+      games_note: 'Also on itch.io: Cat Mazz and KDOCS.',
+      games_all: 'All games on itch.io',
+      about_label: '03 — About', about_side: 'Designer · Developer',
+      about_title: 'Two crafts, same approach.',
+      about_p1: "I'm Kobi, a Moroccan designer and developer. I make thumbnails for YouTube creators and games in Godot. I didn't pick one because I like both halves of the work: the image that earns attention, and the system underneath it.",
+      about_p2: 'I work in English and Arabic. Whatever the format, the standard stays the same — a clear idea, finished properly, delivered on time.',
+      f1l: 'Based in', f1v: 'Morocco', f2l: 'Focus', f2v: 'Thumbnails + Godot',
+      f3l: 'Languages', f3v: 'English · Arabic', f4l: 'Games', f4v: '6 on itch.io',
+      contact_label: '04 — Contact', contact_side: 'Open for commissions',
+      contact_title: 'Have a thumbnail or a game in mind?',
+      contact_lede: "Tell me what you're making and when you need it. I'll reply with availability and a quote, usually within a day.",
+      contact_note: 'Email is fastest for briefs and files.',
+      soc_copy: 'copy',
+      contact_foot: 'Open for commissions · Remote, worldwide',
+      back_top: 'Back to top ↑',
+      footer_left: '© 2026 Kobi — all rights reserved',
+      footer_right: 'Designed and built by hand',
+      lb_close: 'Close ✕', lb_prev: '← Previous', lb_next: 'Next →',
+      meta_title: 'Kobi — Thumbnail Designer & Game Developer',
+      meta_desc: 'Kobi is a Moroccan designer and developer. YouTube thumbnails and games built in Godot — two crafts, one standard.'
+    },
+    ar: {
+      skip: 'تجاوز إلى الأعمال',
+      nav_thumbs: 'الصور المصغرة', nav_games: 'الألعاب', nav_about: 'من أنا', nav_contact: 'تواصل',
+      kicker: 'كوبي — المغرب',
+      hero_h1a: 'صور مصغرة', hero_h1b: 'وألعاب.',
+      hero_lede: 'أنا كوبي، من المغرب. لا أصمم صورًا مصغرة بألوان عشوائية، ولا أطلق ألعابًا تشبه النماذج الأولية. حرفتان، ومعيار واحد: فكرة واضحة، تُنجز كما يجب.',
+      hero_cta1: 'شاهد الصور المصغرة', hero_cta2: 'العب الألعاب',
+      split1: '01 · تصميم الصور المصغرة', split2: '02 · تطوير الألعاب',
+      thumbs_label: '01 — الصور المصغرة', thumbs_side: '07 أعمال مختارة',
+      thumbs_title: 'أغلفة تُقرأ بلمحة.',
+      thumbs_lede: 'أعمال مختارة ليوتيوب في الألعاب والتعليق والتقنية. فكرة واحدة في كل إطار، وخط يصمد على شاشة الهاتف، وتباين يظل واضحًا وسط المحتوى المزدحم.',
+      cat_edu: 'تعليمي', cat_commentary: 'تعليق', cat_drama: 'دراما منصات',
+      cat_economy: 'اقتصاد المبدعين', cat_tech: 'تقنية', cat_minecraft: 'ماينكرافت', cat_minecraft_ar: 'ماينكرافت · عربي',
+      games_label: '02 — الألعاب', games_side: 'Godot · 06 ألعاب',
+      games_title: 'ألعاب أنهيتها، لا بدأتها فقط.',
+      games_lede: 'ألعاب صغيرة بـ Godot — بعضها صُنع في ساعة واحدة لجيم جام، وبعضها في أسابيع. كلها متاحة للعب.',
+      game1d: 'لعبة قصيرة صُنعت لـ Sop Game Jam 2026.', game1m: 'جيم جام · 2026',
+      game2d: 'صُنعت لـ GMTK Game Jam.', game2m: 'جيم جام',
+      game3d: 'كرة تتبعك في متاهة. لمسة واحدة للجدار تنهي الجولة.', game3m: 'ألغاز · ساعة واحدة',
+      game4d: 'تجربة ألغاز صغيرة بعنوان عربي.', game4m: 'ألغاز · ثنائية اللغة',
+      game5d: 'تذكّر المسار وتجنّب المنصات المزيفة.', game5m: 'ألغاز · ذاكرة',
+      games_note: 'أيضًا على itch.io: Cat Mazz وKDOCS.',
+      games_all: 'كل الألعاب على itch.io',
+      about_label: '03 — من أنا', about_side: 'مصمم · مطور',
+      about_title: 'حرفتان، ومنهج واحد.',
+      about_p1: 'أنا كوبي، مصمم ومطور مغربي. أصنع الصور المصغرة لقنوات يوتيوب والألعاب بـ Godot. لم أختر واحدة لأنني أحب نصفَي العمل: الصورة التي تجذب الانتباه، والنظام الذي يقف خلفها.',
+      about_p2: 'أعمل بالإنجليزية والعربية. وأيًا كان الشكل، يبقى المعيار واحدًا — فكرة واضحة، تُنجز كما يجب، وتُسلّم في وقتها.',
+      f1l: 'المقر', f1v: 'المغرب', f2l: 'التخصص', f2v: 'صور مصغرة + Godot',
+      f3l: 'اللغات', f3v: 'الإنجليزية · العربية', f4l: 'الألعاب', f4v: '6 على itch.io',
+      contact_label: '04 — تواصل', contact_side: 'مفتوح للطلبات',
+      contact_title: 'لديك صورة مصغرة أو لعبة في ذهنك؟',
+      contact_lede: 'أخبرني بما تصنعه ومتى تحتاجه. سأرد بالتوفر والسعر، غالبًا في غضون يوم.',
+      contact_note: 'البريد أسرع للطلبات والملفات.',
+      soc_copy: 'نسخ',
+      contact_foot: 'مفتوح للطلبات · عن بُعد، من أي مكان',
+      back_top: 'إلى الأعلى ↑',
+      footer_left: '© 2026 كوبي — جميع الحقوق محفوظة',
+      footer_right: 'مصمم ومبني يدويًا',
+      lb_close: 'إغلاق ✕', lb_prev: '→ السابق', lb_next: 'التالي ←',
+      meta_title: 'كوبي — مصمم صور مصغرة ومطور ألعاب',
+      meta_desc: 'كوبي مصمم ومطور مغربي. صور مصغرة ليوتيوب وألعاب بـ Godot — حرفتان ومعيار واحد.'
     }
+  };
 
-    // ---- Scroll Progress ----
-    function updatePlayhead() {
-        if (!playhead) return;
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrolledPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        playhead.style.width = scrolledPercent + "%";
-    }
-    window.addEventListener("scroll", updatePlayhead);
-    window.addEventListener("resize", updatePlayhead);
-    updatePlayhead();
+  var root = document.documentElement;
+  var lang = root.lang === 'ar' ? 'ar' : 'en';
 
-    // ---- Reveal on Scroll Observer ----
-    const revealItems = document.querySelectorAll(".reveal");
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("active");
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.15, rootMargin: "0px 0px -20px 0px" });
-    
-    revealItems.forEach(el => revealObserver.observe(el));
-    document.querySelector("#home .reveal")?.classList.add("active");
+  var works = [
+    { src: 'assets/work/thumbnails.jpg', title: 'Thumbnails', cat: 'cat_edu' },
+    { src: 'assets/work/banality.jpg', title: 'Banality', cat: 'cat_commentary' },
+    { src: 'assets/work/stoat-vs-discord.jpg', title: 'Stoat vs Discord', cat: 'cat_drama' },
+    { src: 'assets/work/earn-quickly.jpg', title: 'Earn Quickly', cat: 'cat_economy' },
+    { src: 'assets/work/ai-pricing.jpg', title: 'AI Pricing', cat: 'cat_tech' },
+    { src: 'assets/work/drama.jpg', title: 'Drama', cat: 'cat_minecraft' },
+    { src: 'assets/work/no-assets.jpg', title: 'No Assets', cat: 'cat_minecraft_ar' }
+  ];
 
-    // ========== 3D THUMBNAIL EFFECT (NO ZOOM, PURE ROTATION) ==========
-    const thumbnails = document.querySelectorAll('.thumbnail-3d');
-    
-    thumbnails.forEach(thumbnail => {
-        // Reset any potential inherited scaling
-        thumbnail.style.transition = 'transform 0.2s cubic-bezier(0.2, 0.9, 0.6, 1.1)';
-        thumbnail.style.transformStyle = 'preserve-3d';
-        thumbnail.style.backfaceVisibility = 'hidden';
-        
-        // Mouse move: 3D rotation based on cursor position INSIDE thumbnail
-        thumbnail.addEventListener('mousemove', (e) => {
-            const rect = thumbnail.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width;   // 0..1
-            const y = (e.clientY - rect.top) / rect.height;   // 0..1
-            
-            // Max 12 degrees rotation on X and Y (smooth and natural)
-            const maxRotate = 12;
-            const rotateY = (x - 0.5) * maxRotate * 1.4;   // left-right tilt
-            const rotateX = (0.5 - y) * maxRotate * 1.2;   // up-down tilt
-            
-            // Apply 3D rotation WITHOUT any scale transformation
-            thumbnail.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(5px)`;
-            thumbnail.style.boxShadow = `0 28px 35px -18px rgba(0,0,0,0.6), 0 0 0 1.5px rgba(255,255,255,0.15)`;
-        });
-        
-        // Reset on mouse leave
-        thumbnail.addEventListener('mouseleave', () => {
-            thumbnail.style.transform = `perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-            thumbnail.style.boxShadow = `0 20px 30px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)`;
-            thumbnail.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.95, 0.4, 1.05), box-shadow 0.3s';
-        });
-        
-        thumbnail.addEventListener('mouseenter', () => {
-            thumbnail.style.transition = 'transform 0.08s linear';
-        });
+  var langBtn = document.getElementById('langBtn');
+  var themeBtn = document.getElementById('themeBtn');
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var themeColor = document.querySelector('meta[name="theme-color"]');
+  var lightbox = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
+  var lbTitle = document.getElementById('lbTitle');
+  var lbCat = document.getElementById('lbCat');
+  var lbCount = document.getElementById('lbCount');
+  var lbPrev = document.getElementById('lbPrev');
+  var lbNext = document.getElementById('lbNext');
+  var lbClose = document.getElementById('lbClose');
+  var current = 0;
+  var lastTrigger = null;
+
+  function applyLang(next) {
+    lang = next;
+    root.lang = lang;
+    root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (T[lang][key] != null) el.textContent = T[lang][key];
     });
-    
-    // Additional CSS override to ensure no unwanted zoom
-    const styleOverride = document.createElement("style");
-    styleOverride.textContent = `
-        .thumbnail-3d:hover {
-            transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px); /* reset default, JS handles */
-        }
-        .thumbnail-3d img {
-            max-width: 100%;
-            height: auto;
-            pointer-events: none;
-            transform: translateZ(2px);
-        }
-        /* Video section removed — no related code remains */
-    `;
-    document.head.appendChild(styleOverride);
-    
-    // ---- Smooth anchor scroll for navbar (fix jumping) ----
-    document.querySelectorAll('nav a[href^="#"], .hero-links a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId && targetId !== '#') {
-                e.preventDefault();
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }
+
+    document.title = T[lang].meta_title;
+    if (metaDesc) metaDesc.setAttribute('content', T[lang].meta_desc);
+
+    langBtn.textContent = lang === 'en' ? 'ع' : 'EN';
+    langBtn.setAttribute('aria-label', lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية');
+
+    if (lightbox.open) renderLightbox();
+
+    try { localStorage.setItem('kobi-lang', lang); } catch (e) {}
+  }
+
+  langBtn.addEventListener('click', function () {
+    applyLang(lang === 'en' ? 'ar' : 'en');
+  });
+
+  /* Theme */
+  function currentTheme() {
+    if (root.dataset.theme) return root.dataset.theme;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function syncThemeBtn() {
+    var dark = currentTheme() === 'dark';
+    themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    if (themeColor) themeColor.setAttribute('content', dark ? '#14120E' : '#EFEAE0');
+  }
+  themeBtn.addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('kobi-theme', next); } catch (e) {}
+    syncThemeBtn();
+  });
+  syncThemeBtn();
+
+  /* Active nav */
+  var sections = ['thumbnails', 'games', 'about', 'contact'];
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+  if ('IntersectionObserver' in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(function (a) {
+          a.setAttribute('aria-current', a.getAttribute('href') === '#' + entry.target.id ? 'true' : 'false');
         });
+      });
+    }, { rootMargin: '-38% 0px -55% 0px' });
+    sections.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) spy.observe(el);
     });
-    
-    // Optional: Add fallback for missing local images (already handled via onerror)
-    // Also small magnetic effect on logo for extra polish
-    const logo = document.querySelector('nav .text-2xl');
-    if (logo) {
-        logo.addEventListener('mousemove', (e) => {
-            const rect = logo.getBoundingClientRect();
-            const xOffset = (e.clientX - rect.left - rect.width/2) * 0.08;
-            const yOffset = (e.clientY - rect.top - rect.height/2) * 0.08;
-            logo.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-        });
-        logo.addEventListener('mouseleave', () => {
-            logo.style.transform = 'translate(0px, 0px)';
-        });
+  }
+
+  /* Lightbox */
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function renderLightbox() {
+    var item = works[current];
+    lbImg.src = item.src;
+    lbImg.alt = item.title + ' — YouTube thumbnail by Kobi';
+    lbTitle.textContent = item.title;
+    lbCat.textContent = T[lang][item.cat];
+    lbCount.textContent = pad(current + 1) + ' / ' + pad(works.length);
+    lbPrev.disabled = current === 0;
+    lbNext.disabled = current === works.length - 1;
+  }
+
+  function openLightbox(index, trigger) {
+    current = index;
+    lastTrigger = trigger || null;
+    renderLightbox();
+    if (typeof lightbox.showModal === 'function') lightbox.showModal();
+    else lightbox.setAttribute('open', '');
+  }
+
+  function closeLightbox() {
+    if (typeof lightbox.close === 'function') lightbox.close();
+    else lightbox.removeAttribute('open');
+  }
+
+  document.querySelectorAll('.shot').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      openLightbox(Number(btn.getAttribute('data-index')), btn);
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click', function () { if (current > 0) { current--; renderLightbox(); } });
+  lbNext.addEventListener('click', function () { if (current < works.length - 1) { current++; renderLightbox(); } });
+  lightbox.addEventListener('click', function (event) { if (event.target === lightbox) closeLightbox(); });
+  lightbox.addEventListener('close', function () { if (lastTrigger) lastTrigger.focus(); });
+  lightbox.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowRight' && current < works.length - 1) { current++; renderLightbox(); }
+    if (event.key === 'ArrowLeft' && current > 0) { current--; renderLightbox(); }
+  });
+
+  /* Copy Discord */
+  var discordBtn = document.getElementById('discordBtn');
+  var copyLabel = document.getElementById('copyLabel');
+  var copyStatus = document.getElementById('copyStatus');
+  var copyTimer;
+
+  discordBtn.addEventListener('click', function () {
+    var value = 'kobix1';
+    function done() {
+      copyLabel.textContent = lang === 'ar' ? 'تم النسخ' : 'copied';
+      copyStatus.textContent = (lang === 'ar' ? 'تم نسخ اسم ديسكورد: ' : 'Discord username copied: ') + value;
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(function () {
+        copyLabel.textContent = T[lang].soc_copy;
+      }, 1800);
     }
-    
-    console.log("✅ Portfolio updated: Discord: kobix2, Video section removed, Local thumbnails active, 3D effect (no zoom) preserved.");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(value).then(done, done);
+    } else {
+      done();
+    }
+  });
+
+  applyLang(lang);
+})();
 </script>
 </body>
 </html>
