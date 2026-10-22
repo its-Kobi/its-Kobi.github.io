@@ -1,0 +1,77 @@
+{
+  "source": "https://kobi-21.itch.io/",
+  "updated": "2026-10-22T21:32:23.307Z",
+  "total": 7,
+  "games": [
+    {
+      "title": "ItsMyCrown",
+      "slug": "itsmycrown",
+      "url": "https://kobi-21.itch.io/itsmycrown",
+      "cover": "https://img.itch.zone/aW1nLzMxMjA1MzAwLmpwZw==/315x250%23c/5yClNy.jpg",
+      "desc_en": "A Tag Game That Your Goal IS GET THE CROWN !",
+      "desc_ar": null,
+      "meta_en": null,
+      "meta_ar": null
+    },
+    {
+      "title": "Broken",
+      "slug": "broken",
+      "url": "https://kobi-21.itch.io/broken",
+      "cover": "https://img.itch.zone/aW1nLzI5MTM5Mjc5LnBuZw==/315x250%23c/WfM30l.png",
+      "desc_en": "A short game made for Sop Game Jam 2026.",
+      "desc_ar": "لعبة قصيرة صُنعت لـ Sop Game Jam 2026.",
+      "meta_en": "Game jam · 2026",
+      "meta_ar": "جيم جام · 2026"
+    },
+    {
+      "title": "One More Click!",
+      "slug": "one-more-click",
+      "url": "https://kobi-21.itch.io/one-more-click",
+      "cover": "https://img.itch.zone/aW1nLzI4NzMxMTI3LnBuZw==/315x250%23c/MUL9JA.png",
+      "desc_en": "Built for GMTK Game Jam.",
+      "desc_ar": "صُنعت لـ GMTK Game Jam.",
+      "meta_en": "Game jam",
+      "meta_ar": "جيم جام"
+    },
+    {
+      "title": "Weird - غريب",
+      "slug": "weird-gharib",
+      "url": "https://kobi-21.itch.io/weird-gharib",
+      "cover": "https://img.itch.zone/aW1nLzI3Nzc1NzgzLnBuZw==/315x250%23c/qKc3N9.png",
+      "desc_en": "A small puzzle experiment, titled in Arabic.",
+      "desc_ar": "تجربة ألغاز صغيرة بعنوان عربي.",
+      "meta_en": "Puzzle · Bilingual",
+      "meta_ar": "ألغاز · ثنائية اللغة"
+    },
+    {
+      "title": "The Annoying Ball",
+      "slug": "the-annoying-ball",
+      "url": "https://kobi-21.itch.io/the-annoying-ball",
+      "cover": "https://img.itch.zone/aW1nLzI3NTkxMjk0LnBuZw==/315x250%23c/RoGH%2FI.png",
+      "desc_en": "A ball follows you through a maze. One touch against a wall ends the run.",
+      "desc_ar": "كرة تتبعك في متاهة. لمسة واحدة للجدار تنهي الجولة.",
+      "meta_en": "Puzzle · 1 hour",
+      "meta_ar": "ألغاز · ساعة واحدة"
+    },
+    {
+      "title": "Remember Me!",
+      "slug": "remember-me",
+      "url": "https://kobi-21.itch.io/remember-me",
+      "cover": "https://img.itch.zone/aW1nLzI2OTE3OTY0LnBuZw==/315x250%23c/StRRUG.png",
+      "desc_en": "Remember the path and avoid the fake platforms.",
+      "desc_ar": "تذكّر المسار وتجنّب المنصات المزيفة.",
+      "meta_en": "Puzzle · Memory",
+      "meta_ar": "ألغاز · ذاكرة"
+    },
+    {
+      "title": "Cat Mazz",
+      "slug": "cat-mazz",
+      "url": "https://kobi-21.itch.io/cat-mazz",
+      "cover": "https://img.itch.zone/aW1nLzI2MDc2MjQwLnBuZw==/315x250%23c/ng7rUs.png",
+      "desc_en": "A small puzzle game.",
+      "desc_ar": "لعبة ألغاز صغيرة.",
+      "meta_en": "Puzzle",
+      "meta_ar": "ألغاز"
+    }
+  ]
+}

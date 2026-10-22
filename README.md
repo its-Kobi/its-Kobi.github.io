@@ -50,6 +50,25 @@ in `#discordUser` plus the `discordBtn` handler.
 3. Add the same file to the `works` array in the script.
 4. Update "07 selected" / `thumbs_side`.
 
+## Games list auto-sync
+
+The games list is driven by `games.json`, which is generated from the public
+itch.io profile. A GitHub Action (`.github/workflows/update-games.yml`) refreshes
+it every 3 hours, or on demand from the Actions tab, and commits only when
+something changed. The five most recent games appear on the page; the rest are
+listed in the "Also on itch.io" line.
+
+Local refresh:
+
+```sh
+node scripts/update-games.mjs
+```
+
+- Non-game projects are skipped via `EXCLUDE` in `scripts/update-games.mjs`.
+- Known games use the hand-written English/Arabic copy in `COPY`.
+- New games fall back to the short description on itch.io (English) and a
+  generic Arabic line. Add a `COPY` entry for translated copy.
+
 ## Deploying
 
 GitHub Pages serves the repository root:

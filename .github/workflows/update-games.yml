@@ -1,0 +1,58 @@
+name: Sync games from itch.io
+
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/update-games.mjs'
+      - '.github/workflows/update-games.yml'
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: sync-games
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Read itch.io profile
+        run: node scripts/update-games.mjs
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain games.json)" ]; then
+            git add games.json
+            git commit -m "Sync games from itch.io"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "games.json is already up to date"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+        id: commit
+
+      - name: Rebuild GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            || echo "Pages build request skipped (site may rebuild on push automatically)"

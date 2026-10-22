@@ -502,12 +502,12 @@
   <section class="section wrap" id="games" aria-labelledby="games-title">
     <div class="section-head mono">
       <span data-i18n="games_label">02 — Games</span>
-      <span class="side" data-i18n="games_side">Godot · 06 released</span>
+      <span class="side" id="gamesSide" data-i18n="games_side">Godot · 06 released</span>
     </div>
     <h2 class="section-title" id="games-title" data-i18n="games_title">Games I finished, not just started.</h2>
     <p class="section-lede" data-i18n="games_lede">Small Godot games — some built in a single hour for a jam, some over a few weeks. All playable, all released.</p>
 
-    <div class="game-list">
+    <div class="game-list" id="gameList">
       <a class="game" href="https://kobi-21.itch.io/broken" target="_blank" rel="noopener">
         <span class="n">01</span>
         <h3>Broken</h3>
@@ -546,7 +546,7 @@
     </div>
 
     <div class="all-games">
-      <p class="mono" data-i18n="games_note">Also on itch.io: Cat Mazz and KDOCS.</p>
+      <p class="mono" id="gamesNote" data-i18n="games_note">Also on itch.io: Cat Mazz and KDOCS.</p>
       <a class="link" href="https://kobi-21.itch.io" target="_blank" rel="noopener" data-i18n="games_all">All games on itch.io</a>
     </div>
   </section>
@@ -654,6 +654,9 @@
       game4d: 'A small puzzle experiment, titled in Arabic.', game4m: 'Puzzle · Bilingual',
       game5d: 'Remember the path and avoid the fake platforms.', game5m: 'Puzzle · Memory',
       games_note: 'Also on itch.io: Cat Mazz and KDOCS.',
+      game_new_desc: 'New on itch.io — open it to take a look.',
+      auto_note: 'Updates automatically from itch.io',
+      auto_also: 'Also on itch.io: ',
       games_all: 'All games on itch.io',
       about_label: '03 — About', about_side: 'Designer · Developer',
       about_title: 'Two crafts, same approach.',
@@ -696,6 +699,9 @@
       game4d: 'تجربة ألغاز صغيرة بعنوان عربي.', game4m: 'ألغاز · ثنائية اللغة',
       game5d: 'تذكّر المسار وتجنّب المنصات المزيفة.', game5m: 'ألغاز · ذاكرة',
       games_note: 'أيضًا على itch.io: Cat Mazz وKDOCS.',
+      game_new_desc: 'جديدة على itch.io — افتحها لتراها.',
+      auto_note: 'تتحدّث تلقائيًا من itch.io',
+      auto_also: 'أيضًا على itch.io: ',
       games_all: 'كل الألعاب على itch.io',
       about_label: '03 — من أنا', about_side: 'مصمم · مطور',
       about_title: 'حرفتان، ومنهج واحد.',
@@ -745,6 +751,75 @@
   var lbClose = document.getElementById('lbClose');
   var current = 0;
   var lastTrigger = null;
+  var gameList = document.getElementById('gameList');
+  var gamesSide = document.getElementById('gamesSide');
+  var gamesNote = document.getElementById('gamesNote');
+  var gameData = null;
+
+  function paintGames() {
+    if (!gameData || !gameList) return;
+    var games = gameData.games.slice(0, 5);
+
+    if (gamesSide) {
+      gamesSide.textContent = lang === 'ar'
+        ? 'Godot · ' + gameData.total + ' ألعاب'
+        : 'Godot · ' + pad(gameData.total) + ' released';
+    }
+
+    gameList.textContent = '';
+    games.forEach(function (game, i) {
+      var row = document.createElement('a');
+      row.className = 'game';
+      row.href = game.url;
+      row.target = '_blank';
+      row.rel = 'noopener';
+
+      var num = document.createElement('span');
+      num.className = 'n';
+      num.textContent = pad(i + 1);
+
+      var title = document.createElement('h3');
+      title.textContent = game.title;
+
+      var desc = document.createElement('p');
+      desc.textContent = (lang === 'ar' ? game.desc_ar : game.desc_en) || T[lang].game_new_desc;
+
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = (lang === 'ar' ? game.meta_ar : game.meta_en) || 'itch.io';
+
+      var go = document.createElement('span');
+      go.className = 'go';
+      go.setAttribute('aria-hidden', 'true');
+      go.textContent = '↗';
+
+      row.appendChild(num);
+      row.appendChild(title);
+      row.appendChild(desc);
+      row.appendChild(meta);
+      row.appendChild(go);
+      gameList.appendChild(row);
+    });
+
+    if (gamesNote) {
+      var rest = gameData.games.slice(5).map(function (game) { return game.title; });
+      var note = T[lang].auto_note;
+      if (rest.length) note += ' · ' + T[lang].auto_also + rest.join(lang === 'ar' ? '، ' : ', ');
+      gamesNote.textContent = note;
+    }
+  }
+
+  function loadGames() {
+    if (!window.fetch || !gameList) return;
+    fetch('games.json', { cache: 'no-store' })
+      .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.games) || !data.games.length) return;
+        gameData = data;
+        paintGames();
+      })
+      .catch(function () { /* keep the hand-written list */ });
+  }
 
   function applyLang(next) {
     lang = next;
@@ -763,6 +838,7 @@
     langBtn.setAttribute('aria-label', lang === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية');
 
     if (lightbox.open) renderLightbox();
+    if (gameData) paintGames();
 
     try { localStorage.setItem('kobi-lang', lang); } catch (e) {}
   }
@@ -875,6 +951,7 @@
   });
 
   applyLang(lang);
+  loadGames();
 })();
 </script>
 </body>
