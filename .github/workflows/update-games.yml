@@ -8,6 +8,7 @@ on:
     paths:
       - 'scripts/update-games.mjs'
       - '.github/workflows/update-games.yml'
+      - 'games.json'
 
 permissions:
   contents: write
